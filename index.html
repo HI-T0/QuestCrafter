@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuestCrafter - Riddle Edition</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .game-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .puzzle {
+            margin-bottom: 20px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px;
+            font-size: 16px;
+            background-color: black;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: black;
+        }
+        .message {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+        .badge {
+            color: gold;
+            font-size: 20px;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>QuestCrafter - Riddle Edition</h1>
+        <div class="puzzle">
+            <h3>Riddle</h3>
+            <p id="puzzle-question"></p>
+            <input type="text" id="puzzle-answer" placeholder="Enter your answer">
+            <button onclick="checkAnswer()">Submit Answer</button>
+        </div>
+        <div class="message" id="message"></div>
+        <div class="badge" id="badge-message"></div>
+    </div>
+
+    <script>
+        const levels = [
+            // Example set of riddles; expand this with 25 unique riddles for each week
+            { question: "What has roots as nobody sees, is taller than trees, up, up it goes, and yet never grows?", answer: "mountain" },
+            { question: "I have cities, but no houses. I have mountains, but no trees. I have water, but no fish. What am I?", answer: "map" },
+            { question: "The more you take, the more you leave behind. What am I?", answer: "footsteps" },
+            // Add more riddles to reach 25
+        ];
+
+        let gameState = {
+            currentLevel: 0,
+            score: 0,
+            badgeEarned: false,
+        };
+
+        function updateUI() {
+            const currentRiddle = levels[gameState.currentLevel];
+            document.getElementById('puzzle-question').textContent = currentRiddle.question;
+        }
+
+        function checkAnswer() {
+            const currentRiddle = levels[gameState.currentLevel];
+            const userAnswer = document.getElementById('puzzle-answer').value.toLowerCase();
+            if (userAnswer === currentRiddle.answer) {
+                gameState.score += 100;
+                gameState.currentLevel++;
+                setMessage("Correct! You've solved the riddle.");
+                if (gameState.currentLevel >= levels.length) {
+                    gameState.badgeEarned = true;
+                    setMessage("Congratulations! You've solved all the riddles and earned a badge.");
+                    document.getElementById('badge-message').textContent = "🏅 You've earned a Badge! 🏅";
+                } else {
+                    updateUI();
+                }
+            } else {
+                setMessage("That's not quite right. Try again!");
+            }
+            document.getElementById('puzzle-answer').value = '';
+        }
+
+        function setMessage(msg) {
+            document.getElementById('message').textContent = msg;
+        }
+
+        // Load game state from local storage (optional)
+        const savedState = localStorage.getItem('questCrafterState');
+        if (savedState) {
+            gameState = JSON.parse(savedState);
+        }
+
+        // Update UI when the page loads
+        updateUI();
+    </script>
+</body>
+</html>
